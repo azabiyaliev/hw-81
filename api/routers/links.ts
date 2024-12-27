@@ -3,15 +3,6 @@ import Link from "../models/link";
 import crypto from "crypto";
 const linksRouter = express.Router();
 
-linksRouter.get("/", async (req, res, next) => {
-    try {
-        const links = await Link.find();
-        res.send(links);
-    } catch (e) {
-        next(e);
-    }
-});
-
 linksRouter.get(`/:shortUrl`, async (req, res, next) => {
 
     const shortUrl = req.params.shortUrl;
@@ -27,6 +18,7 @@ linksRouter.get(`/:shortUrl`, async (req, res, next) => {
         } else {
             res.status(301).redirect(links.originalUrl);
         }
+
     } catch (e) {
         next(e);
     }

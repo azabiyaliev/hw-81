@@ -1,11 +1,11 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { ILink } from "../../../../types";
+import {ILink, ILinkWithId} from "../../../../types";
 import axiosAPI from "../../../../axiosAPI.ts";
 
-export const fetchPostLink = createAsyncThunk<void, ILink>(
+export const fetchPostLink = createAsyncThunk<ILinkWithId, ILink>(
     "postLink/fetchPostLink",
     async (form) => {
-        await axiosAPI.post("/links", {...form});
+         const response = await axiosAPI.post<ILink>("/links", {...form});
+         return response.data as ILinkWithId;
     });
-
 

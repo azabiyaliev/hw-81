@@ -1,9 +1,9 @@
-import {Box, Button, Container, TextField, Typography} from "@mui/material";
+import {Box, Button, CircularProgress, Container, Link, TextField, Typography} from "@mui/material";
 import {ILink} from "../../../types";
-import React, {useState} from "react";
-import {useAppDispatch} from "../../../app/hooks.ts";
+import React, { useState} from "react";
+import {useAppDispatch, useAppSelector} from "../../../app/hooks.ts";
 import {fetchPostLink} from "../store/thunks/thunks.ts";
-
+import {isFetching, resLinksList} from "./linksSlice.ts";
 
 const initialForm = {
     shortUrl: "",
@@ -13,8 +13,9 @@ const initialForm = {
 const Links = () => {
 
     const [form, setForm] = useState<ILink>({ ...initialForm });
-
     const dispatch = useAppDispatch();
+    const links = useAppSelector(resLinksList);
+    const fetching = useAppSelector(isFetching);
 
     const onChangeField = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -72,12 +73,35 @@ const Links = () => {
                             sx={{mx: 'auto', width: "auto"}}
                             color="primary"
                             variant="outlined"
+                            disabled={fetching}
                         >
                             Shorten
                         </Button>
                 </Box>
-            </form>
+                {fetching ? (
+                    <Box sx={{display: 'flex'}}>
+                        <CircularProgress sx={{mx: 'auto'}}/>
+                    </Box>
 
+                ) : links && (
+                    <Box >
+                        <Typography
+                            sx={{ mt: 5, textAlign: "center" }}
+                            color="info"
+                            component="h4"
+                            variant="h5"
+                        >
+                            Your link now looks like this:
+                        </Typography>
+                        <Link
+                            sx={{display: "block", textAlign: "center", fontSize: 18, mt: 2 }}
+                            href={links.originalUrl}
+                        >
+                            {`http://localhost:8000/${links.shortUrl}`}
+                        </Link>
+                    </Box>
+                )}
+            </form>
         </Container>
     );
 };
